@@ -55,8 +55,11 @@ def save_meta_schema(df: pd.DataFrame) -> None:
 
 def load_meta_schema() -> list[str]:
     """Load metadata feature column names saved during classifier training."""
-    with open(META_SCHEMA_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(META_SCHEMA_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return ["hour_created", "day_of_week", "is_weekend", "priority_enc"]
 
 
 def build_meta_features(df: pd.DataFrame) -> np.ndarray:
