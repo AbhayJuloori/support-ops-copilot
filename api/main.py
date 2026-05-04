@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,10 +11,18 @@ from src.config import MODELS_DIR
 
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("API started. Models status: %s", _models_status())
+    yield
+
+
 app = FastAPI(
     title="Support Ops Copilot API",
     version="0.1.0",
     description="Ticket classification, SLA prediction, routing, and LLM summarization.",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -40,8 +49,3 @@ def _models_status() -> dict[str, bool]:
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     return HealthResponse(status="ok", models_loaded=_models_status())
-
-
-@app.on_event("startup")
-def log_startup() -> None:
-    logger.info("API started. Models status: %s", _models_status())

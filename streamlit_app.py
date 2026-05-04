@@ -1,8 +1,9 @@
+import os
+import runpy
 import sys
 from pathlib import Path
 
-# Ensure project root is on path
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-# Run the dashboard entry point
-exec(open(Path(__file__).parent / "dashboard" / "app.py").read())
+root = Path(__file__).resolve().parent
+sys.path.insert(0, str(root))
+os.chdir(root)
+runpy.run_path(str(root / "dashboard" / "app.py"), run_name="__main__")
