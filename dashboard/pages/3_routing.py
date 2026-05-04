@@ -8,7 +8,6 @@ import plotly.express as px
 import streamlit as st
 
 from dashboard.components.charts import agent_load_heatmap
-from src.models import routing_recommender
 
 
 st.set_page_config(page_title="Auto-Routing", layout="wide")
@@ -97,18 +96,61 @@ def _routing_distribution(df: pd.DataFrame):
     )
 
 
-def _show_recommendation(result: dict):
-    message = (
-        f"{result['agent_group']} | "
-        f"{result['predicted_category']} | "
-        f"SLA risk {result['breach_probability']:.1%}: {result['rationale']}"
-    )
-    if result["agent_group"] == "escalation":
-        st.error(message)
-    elif result["agent_group"] == "tier2":
-        st.warning(message)
+def demo_route(text: str, priority: str) -> dict:
+    text_lower = text.lower()
+    if any(
+        word in text_lower
+        for word in ["payment", "billing", "charge", "invoice", "refund", "subscription"]
+    ):
+        category, group = "billing", "Billing Team"
+    elif any(
+        word in text_lower
+        for word in [
+            "crash",
+            "error",
+            "bug",
+            "broken",
+            "not working",
+            "down",
+            "outage",
+            "login",
+            "password",
+            "access",
+        ]
+    ):
+        category, group = "technical", "Tier 2 — Technical"
+    elif any(
+        word in text_lower
+        for word in ["ship", "deliver", "tracking", "order", "package", "return"]
+    ):
+        category, group = "shipping", "Fulfillment Team"
+    elif priority == "critical":
+        category, group = "general", "Escalation Queue"
     else:
-        st.success(message)
+        category, group = "general", "Tier 1 — General Support"
+
+    sla_risk = {"critical": 0.88, "high": 0.62, "medium": 0.31, "low": 0.12}[priority]
+    return {
+        "agent_group": group,
+        "category": category,
+        "breach_probability": sla_risk,
+        "risk_level": "high" if sla_risk > 0.6 else "medium" if sla_risk > 0.3 else "low",
+    }
+
+
+def _show_recommendation(result: dict):
+    group = result["agent_group"]
+    if group == "Escalation Queue":
+        st.error(f"ESCALATE: {group}")
+    elif group.startswith("Tier 2"):
+        st.warning(f"Route to: {group}")
+    else:
+        st.success(f"Route to: {group}")
+
+    metric_cols = st.columns(3)
+    metric_cols[0].metric("Predicted Category", result["category"].title())
+    metric_cols[1].metric("SLA Risk %", f"{result['breach_probability']:.0%}")
+    metric_cols[2].metric("Risk Level", result["risk_level"].title())
 
 
 df = load_tickets()
@@ -124,21 +166,18 @@ with left:
 with right:
     st.subheader("Try Routing")
     with st.form("routing_form"):
-        ticket_text = st.text_area("Ticket text")
-        priority = st.selectbox("Priority", ["low", "medium", "high", "critical"], index=1)
+        ticket_text = st.text_area(
+            "Ticket text",
+            value=(
+                "My payment was charged twice this month and I still have not "
+                "received a refund. This is urgent."
+            ),
+        )
+        priority = st.selectbox("Priority", ["low", "medium", "high", "critical"], index=2)
         submitted = st.form_submit_button("Get Routing Recommendation")
 
-    models_ready = Path("models/ticket_classifier.pkl").exists() and Path(
-        "models/sla_predictor.pkl"
-    ).exists()
-    if submitted:
-        if models_ready:
-            try:
-                recommendation = routing_recommender.recommend(ticket_text, priority=priority)
-                _show_recommendation(recommendation)
-            except Exception as exc:
-                st.error(f"Unable to generate routing recommendation: {exc}")
-        else:
-            st.info("Train models first: python src/models/ticket_classifier.py && python src/models/sla_predictor.py")
+    if submitted or ticket_text.strip():
+        recommendation = demo_route(ticket_text, priority=priority)
+        _show_recommendation(recommendation)
 
 st.plotly_chart(agent_load_heatmap(df), use_container_width=True)
