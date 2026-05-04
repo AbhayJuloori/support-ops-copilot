@@ -1,0 +1,12 @@
+/data/raw/
+/data/processed/
+/mlruns/
+/models/
+__pycache__/
+*.pyc
+.env
+*.parquet
+*.pkl
+*.npy
+.DS_Store
+.pytest_cache/
