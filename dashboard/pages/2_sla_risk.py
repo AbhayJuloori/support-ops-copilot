@@ -1,14 +1,12 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-import pickle
 
 import numpy as np
 import pandas as pd
 import streamlit as st
 
 from dashboard.components.charts import sla_gauge
-from src.data.feature_engineer import build_sla_features
 
 
 st.set_page_config(page_title="SLA Risk Monitor", layout="wide")
@@ -86,25 +84,80 @@ def load_tickets() -> pd.DataFrame:
     return _prepare_tickets(_synthetic_tickets())
 
 
-def _predict_open_ticket_risk(open_tickets: pd.DataFrame, threshold: float) -> pd.DataFrame:
-    with open("models/sla_predictor.pkl", "rb") as f:
-        artifacts = pickle.load(f)
-
-    clf = artifacts["classifier"]
-    feature_names = artifacts["feature_names"]
-    features = build_sla_features(open_tickets)
-    for column in feature_names:
-        if column not in features.columns:
-            features[column] = 0
-    features = features[feature_names]
-
-    probabilities = clf.predict_proba(features.values)[:, 1]
-    risk = open_tickets[["ticket_id", "category", "priority", "age_hours"]].copy()
-    risk["breach_probability"] = probabilities
+def _demo_at_risk_tickets() -> pd.DataFrame:
+    rng = np.random.default_rng(7)
+    subjects = [
+        "Duplicate charge on enterprise renewal",
+        "Checkout page returns payment failed",
+        "Invoice total does not match contract",
+        "Refund approved but not received",
+        "Subscription downgraded after card update",
+        "Admin portal login loop",
+        "API returns 500 during bulk upload",
+        "Webhook delivery stopped overnight",
+        "Password reset email never arrives",
+        "Dashboard export button is broken",
+        "Mobile app crashes after latest update",
+        "SSO access denied for new teammates",
+        "Package marked delivered but missing",
+        "Tracking number has not updated",
+        "Replacement order stuck in warehouse",
+        "Return label link expired",
+        "Priority shipment delayed two days",
+        "Cannot change delivery address",
+        "Critical outage blocking all users",
+        "High-value customer cannot access reports",
+    ]
+    priorities = rng.choice(
+        ["critical", "high", "medium"],
+        size=len(subjects),
+        p=[0.25, 0.45, 0.30],
+    )
+    categories = [
+        "billing",
+        "billing",
+        "billing",
+        "billing",
+        "billing",
+        "technical",
+        "technical",
+        "technical",
+        "technical",
+        "technical",
+        "technical",
+        "technical",
+        "shipping",
+        "shipping",
+        "shipping",
+        "shipping",
+        "shipping",
+        "shipping",
+        "technical",
+        "technical",
+    ]
+    probability_ranges = {
+        "critical": (0.85, 0.95),
+        "high": (0.55, 0.75),
+        "medium": (0.20, 0.45),
+        "low": (0.05, 0.20),
+    }
+    probabilities = [
+        rng.uniform(*probability_ranges[priority]) for priority in priorities
+    ]
+    risk = pd.DataFrame(
+        {
+            "ticket_id": [f"TKT-{ticket_id}" for ticket_id in range(1001, 1021)],
+            "subject": subjects,
+            "category": categories,
+            "priority": priorities,
+            "age_hours": rng.integers(1, 73, size=len(subjects)),
+            "breach_probability": probabilities,
+        }
+    )
     risk["risk_level"] = np.where(
-        risk["breach_probability"] >= threshold,
+        risk["breach_probability"] > 0.60,
         "high",
-        np.where(risk["breach_probability"] >= 0.30, "medium", "low"),
+        np.where(risk["breach_probability"] > 0.30, "medium", "low"),
     )
     return risk.sort_values("breach_probability", ascending=False)
 
@@ -124,22 +177,13 @@ if DEMO_MODE or not DATA_PATH.exists():
 
 st.title("SLA Risk Monitor")
 threshold = st.slider("Risk threshold", min_value=0.0, max_value=1.0, value=0.5)
-breach_rate = float(df.get("sla_breached", pd.Series(dtype=float)).mean() or 0)
+risk_df = _demo_at_risk_tickets()
+filtered_risk = risk_df[risk_df["breach_probability"] >= threshold].copy()
+breach_rate = float((risk_df["breach_probability"] >= threshold).mean())
 st.plotly_chart(sla_gauge(breach_rate), use_container_width=True)
 
-model_path = Path("models/sla_predictor.pkl")
-if model_path.exists():
-    open_tickets = df[df.get("status", pd.Series(dtype=str)) != "closed"].copy()
-    if open_tickets.empty:
-        st.info("No open tickets to score.")
-    else:
-        try:
-            risk_df = _predict_open_ticket_risk(open_tickets, threshold)
-            styled = risk_df.style.apply(_risk_row_style, axis=1).format(
-                {"age_hours": "{:.1f}", "breach_probability": "{:.1%}"}
-            )
-            st.dataframe(styled, use_container_width=True)
-        except Exception as exc:
-            st.error(f"Unable to score SLA risk: {exc}")
-else:
-    st.info("Train models first: python src/models/sla_predictor.py")
+styled = filtered_risk.style.apply(_risk_row_style, axis=1).format(
+    {"age_hours": "{:.0f}", "breach_probability": "{:.1%}"}
+)
+st.dataframe(styled, use_container_width=True)
+st.caption("Live demo with simulated predictions. Connect real data to see actual ML predictions.")
