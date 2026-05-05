@@ -10,3 +10,17 @@ __pycache__/
 *.npy
 .DS_Store
 .pytest_cache/
+
+# Data and models
+data/raw/
+data/processed/
+models/*.pkl
+models/tfidf_vectorizer.pkl
+mlruns/
+
+
+# Env
+.env
+.venv/
+__pycache__/
+*.pyc
