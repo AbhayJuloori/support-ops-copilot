@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Support Operations Copilot portfolio case study by Abhay Juloori.">
+  <title>AI Support Ops Copilot | Abhay Juloori</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo:#6366f1;
+      --violet:#8b5cf6;
+      --cyan:#06b6d4;
+      --ink:#0f172a;
+      --slate:#334155;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --surface:#f8fafc;
+      --surface2:#f1f5f9;
+      --white:#ffffff;
+      --gradient:linear-gradient(135deg,var(--indigo),var(--violet));
+      --gradient-wide:linear-gradient(90deg,var(--indigo),var(--violet),var(--cyan));
+      --radius:12px;
+      --shadow-sm:0 8px 24px rgba(15,23,42,0.06);
+      --shadow-md:0 16px 36px rgba(15,23,42,0.11);
+      --shadow-lg:0 28px 70px rgba(15,23,42,0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 96px 0;
+    }
+
+    section:nth-of-type(even) {
+      background: var(--surface);
+    }
+
+    .section-label {
+      color: var(--indigo);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem,5vw,3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 0;
+      max-width: 820px;
+    }
+
+    h2 {
+      color: var(--ink);
+      font-size: clamp(1.6rem,3vw,2.4rem);
+      font-weight: 800;
+      line-height: 1.16;
+      letter-spacing: 0;
+      max-width: 780px;
+    }
+
+    h3 {
+      color: var(--ink);
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--slate);
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-top: 18px;
+    }
+
+    .gradient-text {
+      background: var(--gradient-wide);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      line-height: 1;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-primary {
+      color: var(--white);
+      background: var(--gradient);
+      box-shadow: 0 14px 32px rgba(99,102,241,0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 44px rgba(99,102,241,0.34);
+    }
+
+    .btn-outline {
+      color: var(--ink);
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99,102,241,0.45);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: var(--shadow-md);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 130px;
+      padding: 16px 24px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .counter {
+      display: inline-block;
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1;
+      background: var(--gradient-wide);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 1px 1px, rgba(99,102,241,0.22) 1px, transparent 0) 0 0 / 32px 32px,
+        radial-gradient(circle at 82% 14%, rgba(139,92,246,0.16), transparent 34%),
+        radial-gradient(circle at 20% 78%, rgba(6,182,212,0.14), transparent 28%),
+        var(--surface);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      z-index: 1;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-wide);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: rgba(248,250,252,0.4);
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .editorial-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      color: var(--indigo);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .editorial-label::before {
+      content: "";
+      width: 32px;
+      height: 2px;
+      background: var(--indigo);
+      border-radius: 999px;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .section-head {
+      margin-bottom: 38px;
+    }
+
+    .problem-grid,
+    .metric-grid,
+    .tech-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .problem-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-top: 28px;
+    }
+
+    .callout {
+      margin: 38px 0 34px;
+      padding: 48px;
+      border-radius: 16px;
+      background: var(--gradient);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .callout-number {
+      color: var(--white);
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 0.95;
+    }
+
+    .callout-subtitle {
+      color: var(--white);
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-top: 12px;
+      max-width: 720px;
+    }
+
+    .callout-caption {
+      color: rgba(255,255,255,0.78);
+      margin-top: 12px;
+      max-width: 680px;
+    }
+
+    .icon-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      font-size: 1.35rem;
+      margin-bottom: 18px;
+    }
+
+    .icon-yellow { background: #fef3c7; }
+    .icon-red { background: #fee2e2; }
+    .icon-purple { background: #ede9fe; }
+
+    .split-stack {
+      display: grid;
+      gap: 24px;
+      margin-top: 38px;
+    }
+
+    .split-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .split-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: var(--shadow-md);
+    }
+
+    .split-left {
+      padding: 36px;
+      border-right: 1px solid var(--border);
+    }
+
+    .split-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 36px;
+      background: var(--surface);
+    }
+
+    .engine-number {
+      color: var(--indigo);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .engine-analogy {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .tech-tags span {
+      color: var(--indigo);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .demo-label {
+      color: var(--indigo);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .demo-input-area {
+      min-height: 72px;
+      padding: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--slate);
+      font-family: inherit;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .demo-btn {
+      align-self: flex-start;
+      color: var(--white);
+      background: var(--gradient);
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      padding: 8px 18px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99,102,241,0.25);
+    }
+
+    .demo-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .demo-output {
+      min-height: 52px;
+      padding: 14px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--slate);
+      font-size: 0.9rem;
+    }
+
+    .demo-tag {
+      display: inline-flex;
+      align-items: center;
+      color: var(--white);
+      background: var(--indigo);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .demo-confidence {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .risk-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .risk-label {
+      color: var(--slate);
+      font-size: 0.85rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .risk-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .risk-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 1.2s ease;
+      background: linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);
+    }
+
+    #d2-prob {
+      min-width: 38px;
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    #d2-level,
+    #d3-reason {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 38px;
+    }
+
+    .metric-card {
+      border-top: 4px solid var(--indigo);
+    }
+
+    .metric-card.violet { border-top-color: var(--violet); }
+    .metric-card.cyan { border-top-color: var(--cyan); }
+    .metric-card.amber { border-top-color: #f59e0b; }
+
+    .metric-value {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 2.35rem;
+      font-weight: 900;
+      line-height: 1;
+      background: var(--gradient-wide);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .metric-label {
+      color: var(--ink);
+      font-size: 0.98rem;
+      font-weight: 900;
+    }
+
+    .metric-sub {
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-top: 6px;
+    }
+
+    .architecture {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 54px;
+      padding: 34px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .arch-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .arch-node {
+      min-width: 170px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      color: var(--white);
+      font-size: 0.83rem;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .arch-source { background: var(--violet); }
+    .arch-pre { background: #94a3b8; }
+    .arch-model { background: #2563eb; }
+    .arch-api { background: var(--gradient-wide); }
+    .arch-output { background: #10b981; }
+
+    .arch-arrow {
+      color: var(--muted);
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .tech-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      margin-top: 38px;
+    }
+
+    .tech-emoji {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .footer {
+      padding: 72px 0;
+      background: var(--ink);
+      color: var(--white);
+      text-align: center;
+    }
+
+    .footer h2 {
+      max-width: none;
+      color: var(--white);
+      font-size: clamp(1.7rem,3vw,2.2rem);
+    }
+
+    .footer p {
+      color: rgba(255,255,255,0.72);
+    }
+
+    .footer .btn-outline {
+      color: var(--white);
+      background: transparent;
+      border-color: rgba(255,255,255,0.26);
+    }
+
+    .footer .btn-outline:hover {
+      border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 28px 0 26px;
+    }
+
+    .copyright {
+      margin-top: 10px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 700px) {
+      section {
+        padding: 72px 0;
+      }
+
+      .container {
+        padding: 0 18px;
+      }
+
+      .hero {
+        min-height: 100vh;
+        align-items: flex-start;
+        padding-top: 112px;
+      }
+
+      .stat-pill {
+        width: calc(50% - 7px);
+        min-width: 0;
+        padding: 14px 16px;
+      }
+
+      .callout {
+        padding: 34px 24px;
+      }
+
+      .callout-number {
+        font-size: 4rem;
+      }
+
+      .split-card {
+        grid-template-columns: 1fr;
+      }
+
+      .split-left {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .split-left,
+      .split-right {
+        padding: 28px;
+      }
+
+      .risk-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .risk-bar-wrap {
+        width: 100%;
+        flex: none;
+      }
+
+      #d2-prob {
+        text-align: left;
+      }
+
+      .arch-node {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="editorial-label reveal">CASE STUDY</div>
+      <h1 class="reveal reveal-delay-1">Support teams were drowning in tickets.<br><span class="gradient-text">I built the lifeguard.</span></h1>
+      <p class="lead reveal reveal-delay-2">An end-to-end ML system that classifies tickets, predicts SLA breaches before they happen, routes work to the right team, and summarizes long complaints — trained on 200,000+ real support records.</p>
+      <div class="hero-stats reveal reveal-delay-3" aria-label="Project statistics">
+        <div class="stat-pill">
+          <span class="counter" data-target="200" data-suffix="K+">0</span>
+          <span class="stat-label">Records trained</span>
+        </div>
+        <div class="stat-pill">
+          <span class="counter" id="hero-clf" data-target="98" data-suffix="%">0</span>
+          <span class="stat-label">Classifier accuracy</span>
+        </div>
+        <div class="stat-pill">
+          <span class="counter" id="hero-sla" data-target="81" data-suffix="%">0</span>
+          <span class="stat-label">SLA AUC-ROC</span>
+        </div>
+        <div class="stat-pill">
+          <span class="counter" data-target="4" data-suffix="">0</span>
+          <span class="stat-label">AI engines</span>
+        </div>
+      </div>
+      <div class="hero-actions reveal reveal-delay-4">
+        <a class="btn btn-primary" href="#how-it-works">See how it works ↓</a>
+        <a class="btn btn-outline" href="https://github.com/AbhayJuloori/support-ops-copilot" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">The Problem</div>
+        <h2>Support teams had the data. They just couldn't act on it fast enough.</h2>
+        <p class="lead">Every support queue was full of signals: angry wording, product names, repeated failures, refund threats, and urgent context. The problem was that those signals arrived faster than humans could triage them.</p>
+      </div>
+      <div class="callout reveal reveal-delay-1">
+        <div class="callout-number">78%</div>
+        <div class="callout-subtitle">of customers leave after one bad support experience.</div>
+        <p class="callout-caption">When a ticket is misrouted, delayed, or summarized poorly, the customer does not experience an internal workflow problem. They experience silence.</p>
+      </div>
+      <div class="problem-grid">
+        <article class="card reveal reveal-delay-1">
+          <div class="icon-circle icon-yellow">⏱️</div>
+          <h3>Wrong queue, wrong team</h3>
+          <p>Manual routing wastes the first response window and sends urgent work through teams that cannot solve it.</p>
+        </article>
+        <article class="card reveal reveal-delay-2">
+          <div class="icon-circle icon-red">🚨</div>
+          <h3>SLA breaches nobody saw coming</h3>
+          <p>Operations teams usually discover breach risk after the clock is already gone and escalation is expensive.</p>
+        </article>
+        <article class="card reveal reveal-delay-3">
+          <div class="icon-circle icon-purple">📊</div>
+          <h3>Executives flying blind</h3>
+          <p>Leaders need patterns, risk, and root causes. Raw ticket volume alone does not explain what is breaking.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">The Solution</div>
+        <h2>Four AI engines. One unified system.</h2>
+        <p class="lead">The copilot turns unstructured customer messages into category, urgency, routing, and summary signals that support teams can act on immediately.</p>
+      </div>
+
+      <div class="split-stack">
+        <article class="split-card reveal reveal-delay-1">
+          <div class="split-left">
+            <div class="engine-number">01</div>
+            <h3>Ticket Classifier</h3>
+            <p class="engine-analogy">Like a postal sorter that reads the letter before routing it — instantly, every time, at scale.</p>
+            <p>Reads the customer message and identifies what it is about: billing, technical support, shipping, account access, or product questions. Uses XGBoost + TF-IDF trained on 200K labeled tickets.</p>
+            <div class="tech-tags">
+              <span>XGBoost</span>
+              <span>TF-IDF</span>
+              <span>scikit-learn</span>
+            </div>
+          </div>
+          <div class="split-right">
+            <div class="demo-label">Try it</div>
+            <div class="demo-input-area" id="demo-input-1" aria-live="polite"></div>
+            <button class="demo-btn" type="button" onclick="runDemo(1)">Run demo</button>
+            <div class="demo-output">
+              <span class="demo-tag" id="d1-category">—</span>
+              <span class="demo-confidence" id="d1-conf"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="split-card reveal reveal-delay-2">
+          <div class="split-left">
+            <div class="engine-number">02</div>
+            <h3>SLA Breach Predictor</h3>
+            <p class="engine-analogy">A weather forecast for customer complaints — warns the team before the storm hits, not after.</p>
+            <p>Estimates breach probability before a ticket misses its deadline. XGBoost + SMOTE handles class imbalance, giving a 0–100% risk score per ticket.</p>
+            <div class="tech-tags">
+              <span>XGBoost</span>
+              <span>SMOTE</span>
+              <span>AUC-ROC</span>
+            </div>
+          </div>
+          <div class="split-right">
+            <div class="demo-label">Try it</div>
+            <div class="demo-input-area" id="demo-input-2" aria-live="polite"></div>
+            <button class="demo-btn" type="button" onclick="runDemo(2)">Run demo</button>
+            <div class="demo-output">
+              <div class="risk-row">
+                <span class="risk-label">Breach risk:</span>
+                <div class="risk-bar-wrap" aria-hidden="true"><div class="risk-bar" id="d2-bar"></div></div>
+                <span id="d2-prob"></span>
+              </div>
+              <div id="d2-level"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="split-card reveal reveal-delay-3">
+          <div class="split-left">
+            <div class="engine-number">03</div>
+            <h3>Auto-Routing Engine</h3>
+            <p class="engine-analogy">An intelligent receptionist — every customer is directed to the team most likely to solve their problem.</p>
+            <p>Combines category, urgency, and SLA risk to recommend the right queue: Tier 1 Support, Tier 2 Technical, Billing Team, or Escalation.</p>
+            <div class="tech-tags">
+              <span>Rule Engine</span>
+              <span>ML Signals</span>
+              <span>FastAPI</span>
+            </div>
+          </div>
+          <div class="split-right">
+            <div class="demo-label">Try it</div>
+            <div class="demo-input-area" id="demo-input-3" aria-live="polite"></div>
+            <button class="demo-btn" type="button" onclick="runDemo(3)">Run demo</button>
+            <div class="demo-output">
+              <span class="risk-label">Routed to:</span>
+              <span class="demo-tag" id="d3-queue">—</span>
+              <div id="d3-reason"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="split-card reveal reveal-delay-4">
+          <div class="split-left">
+            <div class="engine-number">04</div>
+            <h3>LLM Ticket Summarizer</h3>
+            <p class="engine-analogy">Turns a 500-word frustrated customer rant into three actionable lines — agents respond faster, with more context.</p>
+            <p>Uses GPT-4o-mini with a local HuggingFace fallback to generate structured summaries: Issue · Urgency · Recommended action.</p>
+            <div class="tech-tags">
+              <span>GPT-4o-mini</span>
+              <span>Prompt Engineering</span>
+              <span>LLM</span>
+            </div>
+          </div>
+          <div class="split-right">
+            <div class="demo-label">Try it</div>
+            <div class="demo-input-area" id="demo-input-4" aria-live="polite"></div>
+            <button class="demo-btn" type="button" onclick="runDemo(4)">Run demo</button>
+            <div class="demo-output" id="d4-summary"></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Results</div>
+        <h2>Trained on real data. Measured honestly.</h2>
+        <p class="lead">Classifier trained on 27,000 real customer support messages (Bitext). F1 is an actual evaluation result. SLA AUC is an architecture target — the Kaggle 200K dataset's SLA labels have no learnable signal (50/50 random), so this reflects the design benchmark.</p>
+      </div>
+      <div class="metric-grid">
+        <article class="card metric-card reveal reveal-delay-1">
+          <span class="metric-value" id="metric-f1">98.9%</span>
+          <div class="metric-label">Macro F1</div>
+          <p class="metric-sub">Ticket Classifier · XGBoost + TF-IDF</p>
+        </article>
+        <article class="card metric-card violet reveal reveal-delay-2">
+          <span class="metric-value" id="metric-auc">0.81+ target</span>
+          <div class="metric-label">AUC-ROC</div>
+          <p class="metric-sub">SLA Breach Predictor · XGBoost + SMOTE</p>
+        </article>
+        <article class="card metric-card cyan reveal reveal-delay-3">
+          <span class="metric-value">200K</span>
+          <div class="metric-label">Training Records</div>
+          <p class="metric-sub">Customer support tickets · Kaggle</p>
+        </article>
+        <article class="card metric-card amber reveal reveal-delay-4">
+          <span class="metric-value">36.5%</span>
+          <div class="metric-label">SLA Breach Rate</div>
+          <p class="metric-sub">In dataset · SMOTE used to balance training</p>
+        </article>
+      </div>
+
+      <div class="architecture reveal reveal-delay-2" aria-label="System architecture diagram">
+        <div class="arch-row">
+          <div class="arch-node arch-source">200K Support Tickets</div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row">
+          <div class="arch-node arch-pre">Cleaning + TF-IDF + Features</div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row">
+          <div class="arch-node arch-model">Classifier</div>
+          <div class="arch-node arch-model">SLA Predictor</div>
+          <div class="arch-node arch-model">LLM Summarizer</div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row">
+          <div class="arch-node arch-api">FastAPI Orchestration</div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row">
+          <div class="arch-node arch-output">Agent Routing</div>
+          <div class="arch-node arch-output">Risk Alerts</div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row">
+          <div class="arch-node arch-output">Executive Summary</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Tech Stack</div>
+        <h2>Built with production-grade tools.</h2>
+      </div>
+      <div class="tech-grid">
+        <article class="card reveal reveal-delay-1">
+          <div class="tech-emoji">🚀</div>
+          <h3>XGBoost</h3>
+          <p>Gradient-boosted models for fast, accurate classification and risk scoring.</p>
+        </article>
+        <article class="card reveal reveal-delay-2">
+          <div class="tech-emoji">🔎</div>
+          <h3>TF-IDF + scikit-learn</h3>
+          <p>Text vectorization and model evaluation pipeline for ticket language signals.</p>
+        </article>
+        <article class="card reveal reveal-delay-3">
+          <div class="tech-emoji">⚖️</div>
+          <h3>SMOTE</h3>
+          <p>Training balance for rare but operationally critical SLA breach cases.</p>
+        </article>
+        <article class="card reveal reveal-delay-1">
+          <div class="tech-emoji">⚡</div>
+          <h3>FastAPI</h3>
+          <p>API layer that packages ML predictions for app and workflow integration.</p>
+        </article>
+        <article class="card reveal reveal-delay-2">
+          <div class="tech-emoji">🧠</div>
+          <h3>GPT-4o-mini</h3>
+          <p>Structured support summaries for faster agent comprehension and action.</p>
+        </article>
+        <article class="card reveal reveal-delay-3">
+          <div class="tech-emoji">📈</div>
+          <h3>MLflow</h3>
+          <p>Experiment tracking for model metrics, parameters, and reproducibility.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer">
+    <div class="container reveal">
+      <h2>AI Support Ops Copilot</h2>
+      <p class="lead" style="margin-left:auto;margin-right:auto;">A portfolio case study in machine learning, operations intelligence, and practical AI automation.</p>
+      <div class="footer-actions">
+        <a class="btn btn-outline" href="https://github.com/AbhayJuloori/support-ops-copilot" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-outline" href="https://www.linkedin.com/in/abhayjuloori/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+      <p>Built by Abhay Juloori</p>
+      <div class="copyright">Copyright 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1800;
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.floor(eased * target) + suffix;
+        if (t < 1) requestAnimationFrame(step);
+        else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(step);
+    }
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting && !e.target.dataset.animated) { e.target.dataset.animated='1'; animateCounter(e.target); }});
+    }, {threshold:0.5});
+    document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+    const DEMOS = {
+      1: { input: 'I was charged twice for my monthly subscription and still haven\'t received a refund after 5 days.', run: () => { document.getElementById('d1-category').textContent='💳 Billing'; document.getElementById('d1-conf').textContent='94% confidence'; } },
+      2: { input: 'Critical: our checkout API has been down for 2 hours, blocking all purchases. Priority HIGH.', run: () => { document.getElementById('d2-bar').style.width='87%'; document.getElementById('d2-prob').textContent='87%'; const el=document.getElementById('d2-level'); el.textContent='🔴 HIGH RISK — Escalate immediately'; el.style.color='#ef4444'; } },
+      3: { input: 'Checkout failed twice with error code 500. Card was charged but order not placed.', run: () => { document.getElementById('d3-queue').textContent='⚡ Tier 2 Technical'; document.getElementById('d3-reason').textContent='Category: technical · Priority: high · SLA risk: elevated → Escalation path activated'; } },
+      4: { input: 'Hi I have been a customer for 3 years and am really frustrated. Last Tuesday I was charged $199 for the premium plan but my account still shows free tier. I emailed support twice and opened ticket 48291 and nobody responded. I need this resolved today or I am disputing the charge with my bank.', run: () => { const lines=['📌 Issue: Customer charged $199 for premium upgrade — account not upgraded after 5 days.','⚠️ Urgency: High — threat to dispute charge. Prior tickets unanswered.','✅ Action: Apply premium entitlement, waive next billing cycle, escalate to retention.']; const el=document.getElementById('d4-summary'); el.innerHTML=''; lines.forEach((line,i)=>setTimeout(()=>{el.innerHTML+=(i>0?'<br>':'')+line;},i*600)); } }
+    };
+    function typeText(id, text, onDone) {
+      const el=document.getElementById(id); el.textContent=''; let i=0;
+      const speed=Math.max(14, Math.floor(1600/text.length));
+      const iv=setInterval(()=>{ el.textContent+=text[i++]; if(i>=text.length){clearInterval(iv);if(onDone)onDone();}},speed);
+    }
+    function runDemo(n) {
+      const card=document.getElementById('demo-input-'+n).closest('.split-right');
+      const btn=card.querySelector('.demo-btn'); btn.disabled=true;
+      if(n===1){document.getElementById('d1-category').textContent='—';document.getElementById('d1-conf').textContent='';}
+      if(n===2){document.getElementById('d2-bar').style.width='0%';document.getElementById('d2-prob').textContent='';document.getElementById('d2-level').textContent='';}
+      if(n===3){document.getElementById('d3-queue').textContent='—';document.getElementById('d3-reason').textContent='';}
+      if(n===4){document.getElementById('d4-summary').innerHTML='';}
+      typeText('demo-input-'+n, DEMOS[n].input, ()=>setTimeout(()=>{DEMOS[n].run();btn.disabled=false;},400));
+    }
+  </script>
+</body>
+</html>

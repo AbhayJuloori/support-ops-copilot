@@ -46,7 +46,7 @@ def parse_datetimes(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_resolution_hours(df: pd.DataFrame) -> pd.DataFrame:
-    res_col = next((c for c in ["time_to_resolution", "resolution_time", "time_to_close"] if c in df.columns), None)
+    res_col = next((c for c in ["resolution_time_hours", "time_to_resolution", "resolution_time", "time_to_close"] if c in df.columns), None)
 
     if res_col and df[res_col].dtype in ["float64", "int64"]:
         df["resolution_hours"] = df[res_col]
@@ -77,7 +77,11 @@ def compute_resolution_hours(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_sla_features(df: pd.DataFrame) -> pd.DataFrame:
     df["sla_threshold_hours"] = df["priority"].map(SLA_THRESHOLDS).fillna(24)
-    df["sla_breached"] = df["resolution_hours"] > df["sla_threshold_hours"]
+    # Use existing sla_breached column if present (Yes/No strings), else compute
+    if "sla_breached" in df.columns and df["sla_breached"].dtype == object:
+        df["sla_breached"] = df["sla_breached"].str.strip().str.lower().map({"yes": True, "no": False}).fillna(False)
+    else:
+        df["sla_breached"] = df["resolution_hours"] > df["sla_threshold_hours"]
     return df
 
 
@@ -109,7 +113,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     for std, variants in {
         "ticket_id": ["ticket_id", "id"],
         "subject": ["ticket_subject", "subject", "title"],
-        "description": ["ticket_description", "description", "body", "message"],
+        "description": ["issue_description", "ticket_description", "description", "body", "message"],
         "priority": ["ticket_priority", "priority"],
         "category": ["ticket_type", "category", "type"],
         "channel": ["ticket_channel", "channel", "source"],

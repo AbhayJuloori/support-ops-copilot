@@ -14,3 +14,19 @@ CLAUDE.md
 !CLAUDE.md
 **/CLAUDE.md
 !CLAUDE.md
+
+# Data and models
+data/raw/
+data/processed/
+models/*.pkl
+models/tfidf_vectorizer.pkl
+mlruns/
+
+# Superpowers
+.superpowers/
+
+# Env
+.env
+.venv/
+__pycache__/
+*.pyc

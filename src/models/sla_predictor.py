@@ -5,6 +5,7 @@ import json
 import pickle
 import logging
 from datetime import datetime
+from typing import Optional
 import mlflow
 import numpy as np
 import pandas as pd
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 RISK_THRESHOLDS = {"low": 0.3, "medium": 0.6, "high": 1.0}
 
 
-def train(df: pd.DataFrame | None = None) -> dict:
+def train(df: Optional[pd.DataFrame] = None) -> dict:
     if df is None:
         df = pd.read_parquet(DATA_PROCESSED / "tickets_clean.parquet")
 

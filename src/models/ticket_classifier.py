@@ -6,6 +6,7 @@ import json
 import pickle
 import logging
 from datetime import datetime
+from typing import Optional
 import mlflow
 import numpy as np
 import pandas as pd
@@ -19,7 +20,7 @@ from src.data.feature_engineer import build_features_for_classification
 logger = logging.getLogger(__name__)
 
 
-def train(df: pd.DataFrame | None = None) -> dict:
+def train(df: Optional[pd.DataFrame] = None) -> dict:
     if df is None:
         df = pd.read_parquet(DATA_PROCESSED / "tickets_clean.parquet")
 

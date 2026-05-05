@@ -1,0 +1,19 @@
+{
+  "accuracy": 0.9892093023255814,
+  "macro_f1": 0.9892422458949093,
+  "classes": [
+    "account",
+    "cancel",
+    "contact",
+    "delivery",
+    "feedback",
+    "invoice",
+    "order",
+    "payment",
+    "refund",
+    "shipping",
+    "subscription"
+  ],
+  "dataset": "bitext_27k",
+  "trained_at": "2026-05-04T21:54:05.940910"
+}
