@@ -620,6 +620,140 @@
       line-height: 1;
     }
 
+    .pipeline-stage {
+      background: var(--surface);
+    }
+
+    .pipeline-board {
+      position: relative;
+      margin-top: 46px;
+      min-height: 520px;
+      padding: 18px 0;
+    }
+
+    .pipeline-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      grid-template-rows: repeat(3, minmax(136px, auto));
+      gap: 22px 18px;
+      align-items: center;
+    }
+
+    .pipeline-node {
+      --node-color: var(--indigo);
+      min-height: 118px;
+      padding: 18px 18px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--node-color);
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .pipeline-node.pipeline-pulse {
+      transform: scale(1.05);
+      border-color: color-mix(in srgb, var(--node-color) 45%, var(--border));
+      box-shadow: 0 18px 42px color-mix(in srgb, var(--node-color) 26%, transparent);
+    }
+
+    .pipeline-live {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pipeline-board.pipeline-running .pipeline-live {
+      animation: pipelineLiveGlow 2.2s ease-in-out infinite;
+    }
+
+    .pipeline-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 10px;
+      background: color-mix(in srgb, var(--node-color) 12%, var(--white));
+      border-radius: 999px;
+      font-size: 1.1rem;
+    }
+
+    .pipeline-title {
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .pipeline-kicker {
+      color: var(--node-color);
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 1.3px;
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .pipeline-sub {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 650;
+      line-height: 1.45;
+      margin-top: 6px;
+    }
+
+    .pipeline-raw { grid-column: 1; grid-row: 2; }
+    .pipeline-pre { grid-column: 2; grid-row: 2; }
+    .pipeline-a1 { grid-column: 3; grid-row: 1; }
+    .pipeline-a2 { grid-column: 4; grid-row: 1; }
+    .pipeline-b1 { grid-column: 3; grid-row: 2; }
+    .pipeline-b2 { grid-column: 4; grid-row: 2; }
+    .pipeline-c1 { grid-column: 3; grid-row: 3; }
+    .pipeline-c2 { grid-column: 4; grid-row: 3; }
+    .pipeline-api { grid-column: 5; grid-row: 2; }
+    .pipeline-demo { grid-column: 6; grid-row: 2; }
+
+    .pipeline-link {
+      --line-color: var(--indigo);
+      position: absolute;
+      z-index: 1;
+      height: 2px;
+      pointer-events: none;
+      transform-origin: 0 50%;
+      background: repeating-linear-gradient(90deg, var(--line-color) 0 10px, transparent 10px 16px);
+      opacity: 0.42;
+    }
+
+    .pipeline-link.is-active {
+      opacity: 0.72;
+    }
+
+    .pipeline-dot {
+      position: absolute;
+      top: 50%;
+      left: -5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--line-color);
+      box-shadow: 0 0 14px var(--line-color);
+      opacity: 0;
+      transform: translate(0, -50%);
+      will-change: transform, opacity;
+    }
+
+    @keyframes pipelineLiveGlow {
+      0%, 100% {
+        box-shadow: var(--shadow-sm);
+      }
+
+      50% {
+        box-shadow: 0 18px 44px rgba(139,92,246,0.24);
+      }
+    }
+
     .tech-grid {
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       margin-top: 38px;
@@ -733,6 +867,38 @@
       .arch-node {
         width: 100%;
         min-width: 0;
+      }
+
+      .pipeline-board {
+        min-height: 0;
+        margin-top: 34px;
+        padding: 0;
+      }
+
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        gap: 18px;
+      }
+
+      .pipeline-node {
+        min-height: auto;
+        border-left: 1px solid var(--border);
+        border-top: 4px solid var(--node-color);
+      }
+
+      .pipeline-raw,
+      .pipeline-pre,
+      .pipeline-a1,
+      .pipeline-a2,
+      .pipeline-b1,
+      .pipeline-b2,
+      .pipeline-c1,
+      .pipeline-c2,
+      .pipeline-api,
+      .pipeline-demo {
+        grid-column: auto;
+        grid-row: auto;
       }
     }
 
@@ -920,6 +1086,93 @@
     </div>
   </section>
 
+  <section class="pipeline-stage" id="pipeline">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Under the Hood</div>
+        <h2>From 200K raw tickets to live predictions.</h2>
+        <p class="lead">Raw support data moves through cleaning, feature generation, risk modeling, summarization, and the API layer powering the live page.</p>
+      </div>
+
+      <div class="pipeline-board reveal reveal-delay-1" data-pipeline-board aria-label="Animated machine learning pipeline">
+        <div class="pipeline-link" data-from="pipeline-raw" data-to="pipeline-pre" data-color="#6366f1" data-delay="0"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-pre" data-to="pipeline-a1" data-color="#8b5cf6" data-delay="0"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-a1" data-to="pipeline-a2" data-color="#22c55e" data-delay="1500"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-a2" data-to="pipeline-api" data-color="#22c55e" data-delay="3000"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-pre" data-to="pipeline-b1" data-color="#f59e0b" data-delay="500"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-b1" data-to="pipeline-b2" data-color="#f59e0b" data-delay="2000"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-b2" data-to="pipeline-api" data-color="#f59e0b" data-delay="3500"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-pre" data-to="pipeline-c1" data-color="#06b6d4" data-delay="1000"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-c1" data-to="pipeline-c2" data-color="#06b6d4" data-delay="2500"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-c2" data-to="pipeline-api" data-color="#06b6d4" data-delay="4000"><span class="pipeline-dot"></span></div>
+        <div class="pipeline-link" data-from="pipeline-api" data-to="pipeline-demo" data-color="#8b5cf6" data-delay="5600"><span class="pipeline-dot"></span></div>
+
+        <div class="pipeline-grid">
+          <article class="pipeline-node pipeline-raw" id="pipeline-raw" style="--node-color:#6366f1">
+            <div class="pipeline-icon">🗄️</div>
+            <div class="pipeline-kicker">Raw Data</div>
+            <div class="pipeline-title">200K Tickets</div>
+            <p class="pipeline-sub">Kaggle dataset</p>
+          </article>
+          <article class="pipeline-node pipeline-pre" id="pipeline-pre" style="--node-color:#8b5cf6">
+            <div class="pipeline-icon">🧹</div>
+            <div class="pipeline-kicker">Preprocessor</div>
+            <div class="pipeline-title">Clean &amp; Enrich</div>
+            <p class="pipeline-sub">pandas · normalize · parse dates</p>
+          </article>
+          <article class="pipeline-node pipeline-a1" id="pipeline-a1" style="--node-color:#6366f1">
+            <div class="pipeline-icon">📊</div>
+            <div class="pipeline-kicker">Feature Engineering</div>
+            <div class="pipeline-title">TF-IDF Vectorizer</div>
+            <p class="pipeline-sub">scikit-learn · 3000 features · bigrams</p>
+          </article>
+          <article class="pipeline-node pipeline-a2" id="pipeline-a2" style="--node-color:#22c55e">
+            <div class="pipeline-icon">🎯</div>
+            <div class="pipeline-kicker">Classifier</div>
+            <div class="pipeline-title">XGBoost Classifier</div>
+            <p class="pipeline-sub">n_estimators=300 · macro F1 98.9%</p>
+          </article>
+          <article class="pipeline-node pipeline-b1" id="pipeline-b1" style="--node-color:#f59e0b">
+            <div class="pipeline-icon">⚖️</div>
+            <div class="pipeline-kicker">SMOTE</div>
+            <div class="pipeline-title">SMOTE Oversampler</div>
+            <p class="pipeline-sub">imbalanced-learn · balance breach rate</p>
+          </article>
+          <article class="pipeline-node pipeline-b2" id="pipeline-b2" style="--node-color:#f59e0b">
+            <div class="pipeline-icon">🔮</div>
+            <div class="pipeline-kicker">SLA Predictor</div>
+            <div class="pipeline-title">XGBoost Predictor</div>
+            <p class="pipeline-sub">AUC-ROC target 0.81 · breach probability</p>
+          </article>
+          <article class="pipeline-node pipeline-c1" id="pipeline-c1" style="--node-color:#06b6d4">
+            <div class="pipeline-icon">✍️</div>
+            <div class="pipeline-kicker">LLM Summarizer</div>
+            <div class="pipeline-title">Prompt Engineering</div>
+            <p class="pipeline-sub">structured prompts · issue · urgency · action</p>
+          </article>
+          <article class="pipeline-node pipeline-c2" id="pipeline-c2" style="--node-color:#06b6d4">
+            <div class="pipeline-icon">🤖</div>
+            <div class="pipeline-kicker">LLM Summarizer</div>
+            <div class="pipeline-title">GPT-4o-mini</div>
+            <p class="pipeline-sub">HuggingFace fallback · ticket summaries</p>
+          </article>
+          <article class="pipeline-node pipeline-api" id="pipeline-api" style="--node-color:#6366f1">
+            <div class="pipeline-icon">⚡</div>
+            <div class="pipeline-kicker">FastAPI</div>
+            <div class="pipeline-title">REST API</div>
+            <p class="pipeline-sub">/classify · /sla-risk · /route · /summarize</p>
+          </article>
+          <article class="pipeline-node pipeline-demo pipeline-live" id="pipeline-demo" style="--node-color:#8b5cf6">
+            <div class="pipeline-icon">✨</div>
+            <div class="pipeline-kicker">Live Demo</div>
+            <div class="pipeline-title">You, right now</div>
+            <p class="pipeline-sub">the page you are reading</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="results">
     <div class="container">
       <div class="section-head reveal">
@@ -1084,6 +1337,115 @@
       if(n===4){document.getElementById('d4-summary').innerHTML='';}
       typeText('demo-input-'+n, DEMOS[n].input, ()=>setTimeout(()=>{DEMOS[n].run();btn.disabled=false;},400));
     }
+
+    function initPipelineAnimation() {
+      const board = document.querySelector('[data-pipeline-board]');
+      if (!board || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const duration = 1500;
+      const cycle = 7600;
+      let rafId = null;
+      let running = false;
+      let startTime = 0;
+      const connections = Array.from(board.querySelectorAll('.pipeline-link')).map(link => ({
+        link,
+        dot: link.querySelector('.pipeline-dot'),
+        from: document.getElementById(link.dataset.from),
+        to: document.getElementById(link.dataset.to),
+        color: link.dataset.color || '#6366f1',
+        delay: Number(link.dataset.delay || 0),
+        length: 0,
+        pulsed: false
+      }));
+
+      function layoutConnections() {
+        const boardRect = board.getBoundingClientRect();
+        connections.forEach(conn => {
+          if (!conn.from || !conn.to) return;
+          const fromRect = conn.from.getBoundingClientRect();
+          const toRect = conn.to.getBoundingClientRect();
+          const x1 = fromRect.left + fromRect.width / 2 - boardRect.left;
+          const y1 = fromRect.top + fromRect.height / 2 - boardRect.top;
+          const x2 = toRect.left + toRect.width / 2 - boardRect.left;
+          const y2 = toRect.top + toRect.height / 2 - boardRect.top;
+          const dx = x2 - x1;
+          const dy = y2 - y1;
+          conn.length = Math.hypot(dx, dy);
+          conn.link.style.left = `${x1}px`;
+          conn.link.style.top = `${y1}px`;
+          conn.link.style.width = `${conn.length}px`;
+          conn.link.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+          conn.link.style.setProperty('--line-color', conn.color);
+        });
+      }
+
+      function pulseNode(node) {
+        node.classList.remove('pipeline-pulse');
+        void node.offsetWidth;
+        node.classList.add('pipeline-pulse');
+        setTimeout(() => node.classList.remove('pipeline-pulse'), 300);
+      }
+
+      function draw(now) {
+        if (!running) return;
+        if (!startTime) startTime = now;
+        const elapsed = (now - startTime) % cycle;
+        connections.forEach(conn => {
+          let segmentTime = (elapsed - conn.delay) % cycle;
+          if (segmentTime < 0) segmentTime += cycle;
+          const active = segmentTime <= duration;
+          conn.link.classList.toggle('is-active', active);
+
+          if (!active) {
+            conn.dot.style.opacity = '0';
+            conn.pulsed = false;
+            return;
+          }
+
+          const progress = segmentTime / duration;
+          conn.dot.style.opacity = '1';
+          conn.dot.style.transform = `translate(${conn.length * progress}px, -50%)`;
+          if (progress > 0.96 && !conn.pulsed) {
+            pulseNode(conn.to);
+            conn.pulsed = true;
+          }
+        });
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        if (running) return;
+        layoutConnections();
+        running = true;
+        board.classList.add('pipeline-running');
+        startTime = 0;
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        board.classList.remove('pipeline-running');
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        connections.forEach(conn => {
+          conn.link.classList.remove('is-active');
+          conn.dot.style.opacity = '0';
+          conn.pulsed = false;
+        });
+      }
+
+      const pipelineObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) start();
+          else stop();
+        });
+      }, { threshold: 0.25 });
+
+      pipelineObserver.observe(board);
+      window.addEventListener('resize', layoutConnections, { passive: true });
+      layoutConnections();
+    }
+    initPipelineAnimation();
   </script>
 </body>
 </html>
